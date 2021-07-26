@@ -1,5 +1,5 @@
 # DS-ML-Pyhton
-#### This repo contains learnings about `Data Science` and `Machine Learning` using `Python`
+#### This repo contains learnings about `Data Science` and `Machine Learning` using `Python` `Jupyter Notebooks` downloaded as HTML
 #### 1.  Python Basics
     - Strings
     - Lists
