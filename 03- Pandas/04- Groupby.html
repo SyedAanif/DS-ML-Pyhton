@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>02- DataFrames</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>04- Groupby</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -14259,7 +14259,7 @@ a.anchor-link {
 
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="DataFrames">DataFrames<a class="anchor-link" href="#DataFrames">&#182;</a></h1><p>We can think of a DataFrame as a bunch of Series objects put together to share the same index.</p>
+<h1 id="Groupby">Groupby<a class="anchor-link" href="#Groupby">&#182;</a></h1><p>The <code>groupby</code> method allows you to group rows of data together and call <code>aggregate</code> functions.</p>
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
@@ -14268,22 +14268,12 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span> <span class="c1"># fix same random variables</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="c1"># Create dataframe</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Company&#39;</span><span class="p">:[</span><span class="s1">&#39;GOOG&#39;</span><span class="p">,</span><span class="s1">&#39;GOOG&#39;</span><span class="p">,</span><span class="s1">&#39;MSFT&#39;</span><span class="p">,</span><span class="s1">&#39;MSFT&#39;</span><span class="p">,</span><span class="s1">&#39;FB&#39;</span><span class="p">,</span><span class="s1">&#39;FB&#39;</span><span class="p">],</span>
+       <span class="s1">&#39;Person&#39;</span><span class="p">:[</span><span class="s1">&#39;Sam&#39;</span><span class="p">,</span><span class="s1">&#39;Charlie&#39;</span><span class="p">,</span><span class="s1">&#39;Amy&#39;</span><span class="p">,</span><span class="s1">&#39;Vanessa&#39;</span><span class="p">,</span><span class="s1">&#39;Carl&#39;</span><span class="p">,</span><span class="s1">&#39;Sarah&#39;</span><span class="p">],</span>
+       <span class="s1">&#39;Sales&#39;</span><span class="p">:[</span><span class="mi">200</span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="mi">340</span><span class="p">,</span><span class="mi">124</span><span class="p">,</span><span class="mi">243</span><span class="p">,</span><span class="mi">350</span><span class="p">]}</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14294,12 +14284,10 @@ a.anchor-link {
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># CREATING DATAFRAMES</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;D&#39;</span><span class="p">,</span><span class="s1">&#39;E&#39;</span><span class="p">],</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">,</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span><span class="s1">&#39;Z&#39;</span><span class="p">])</span>
-<span class="n">df</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span>
 </pre></div>
 
      </div>
@@ -14315,7 +14303,7 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[2]:</div>
 
 
 
@@ -14338,47 +14326,47 @@ a.anchor-link {
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>W</th>
-      <th>X</th>
-      <th>Y</th>
-      <th>Z</th>
+      <th>Company</th>
+      <th>Person</th>
+      <th>Sales</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>A</th>
-      <td>2.706850</td>
-      <td>0.628133</td>
-      <td>0.907969</td>
-      <td>0.503826</td>
+      <th>0</th>
+      <td>GOOG</td>
+      <td>Sam</td>
+      <td>200</td>
     </tr>
     <tr>
-      <th>B</th>
-      <td>0.651118</td>
-      <td>-0.319318</td>
-      <td>-0.848077</td>
-      <td>0.605965</td>
+      <th>1</th>
+      <td>GOOG</td>
+      <td>Charlie</td>
+      <td>120</td>
     </tr>
     <tr>
-      <th>C</th>
-      <td>-2.018168</td>
-      <td>0.740122</td>
-      <td>0.528813</td>
-      <td>-0.589001</td>
+      <th>2</th>
+      <td>MSFT</td>
+      <td>Amy</td>
+      <td>340</td>
     </tr>
     <tr>
-      <th>D</th>
-      <td>0.188695</td>
-      <td>-0.758872</td>
-      <td>-0.933237</td>
-      <td>0.955057</td>
+      <th>3</th>
+      <td>MSFT</td>
+      <td>Vanessa</td>
+      <td>124</td>
     </tr>
     <tr>
-      <th>E</th>
-      <td>0.190794</td>
-      <td>1.978757</td>
-      <td>2.605967</td>
-      <td>0.683509</td>
+      <th>4</th>
+      <td>FB</td>
+      <td>Carl</td>
+      <td>243</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>FB</td>
+      <td>Sarah</td>
+      <td>350</td>
     </tr>
   </tbody>
 </table>
@@ -14394,11 +14382,10 @@ a.anchor-link {
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># INDEXING and SELECTION</span>
-<span class="n">df</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">]</span> <span class="c1"># using column</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;Company&#39;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14414,24 +14401,33 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
 
 
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>A    2.706850
-B    0.651118
-C   -2.018168
-D    0.188695
-E    0.190794
-Name: W, dtype: float64</pre>
+<pre>&lt;pandas.core.groupby.generic.DataFrameGroupBy object at 0x0000019DE011B6A0&gt;</pre>
 </div>
 
 </div>
 
 </div>
 
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">by_comp</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;Company&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
 </div>
 
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
@@ -14440,7 +14436,7 @@ Name: W, dtype: float64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">W</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">by_comp</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>   <span class="c1"># aggregate function</span>
 </pre></div>
 
      </div>
@@ -14460,14 +14456,48 @@ Name: W, dtype: float64</pre>
 
 
 
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>A    2.706850
-B    0.651118
-C   -2.018168
-D    0.188695
-E    0.190794
-Name: W, dtype: float64</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Sales</th>
+    </tr>
+    <tr>
+      <th>Company</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>FB</th>
+      <td>296.5</td>
+    </tr>
+    <tr>
+      <th>GOOG</th>
+      <td>160.0</td>
+    </tr>
+    <tr>
+      <th>MSFT</th>
+      <td>232.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 </div>
@@ -14482,7 +14512,7 @@ Name: W, dtype: float64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;W&#39;</span><span class="p">,</span><span class="s1">&#39;Z&#39;</span><span class="p">]]</span> <span class="c1"># multiple columns</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">by_comp</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
 
      </div>
@@ -14521,35 +14551,25 @@ Name: W, dtype: float64</pre>
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>W</th>
-      <th>Z</th>
+      <th>Sales</th>
+    </tr>
+    <tr>
+      <th>Company</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>A</th>
-      <td>2.706850</td>
-      <td>0.503826</td>
+      <th>FB</th>
+      <td>593</td>
     </tr>
     <tr>
-      <th>B</th>
-      <td>0.651118</td>
-      <td>0.605965</td>
+      <th>GOOG</th>
+      <td>320</td>
     </tr>
     <tr>
-      <th>C</th>
-      <td>-2.018168</td>
-      <td>-0.589001</td>
-    </tr>
-    <tr>
-      <th>D</th>
-      <td>0.188695</td>
-      <td>0.955057</td>
-    </tr>
-    <tr>
-      <th>E</th>
-      <td>0.190794</td>
-      <td>0.683509</td>
+      <th>MSFT</th>
+      <td>464</td>
     </tr>
   </tbody>
 </table>
@@ -14568,9 +14588,7 @@ Name: W, dtype: float64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># CREATING NEW COLUMN, if it doesn&#39;t exist else updated</span>
-<span class="n">df</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span>
-<span class="n">df</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">by_comp</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
 </pre></div>
 
      </div>
@@ -14609,53 +14627,25 @@ Name: W, dtype: float64</pre>
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>W</th>
-      <th>X</th>
-      <th>Y</th>
-      <th>Z</th>
-      <th>new</th>
+      <th>Sales</th>
+    </tr>
+    <tr>
+      <th>Company</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>A</th>
-      <td>2.706850</td>
-      <td>0.628133</td>
-      <td>0.907969</td>
-      <td>0.503826</td>
-      <td>3.614819</td>
+      <th>FB</th>
+      <td>75.660426</td>
     </tr>
     <tr>
-      <th>B</th>
-      <td>0.651118</td>
-      <td>-0.319318</td>
-      <td>-0.848077</td>
-      <td>0.605965</td>
-      <td>-0.196959</td>
+      <th>GOOG</th>
+      <td>56.568542</td>
     </tr>
     <tr>
-      <th>C</th>
-      <td>-2.018168</td>
-      <td>0.740122</td>
-      <td>0.528813</td>
-      <td>-0.589001</td>
-      <td>-1.489355</td>
-    </tr>
-    <tr>
-      <th>D</th>
-      <td>0.188695</td>
-      <td>-0.758872</td>
-      <td>-0.933237</td>
-      <td>0.955057</td>
-      <td>-0.744542</td>
-    </tr>
-    <tr>
-      <th>E</th>
-      <td>0.190794</td>
-      <td>1.978757</td>
-      <td>2.605967</td>
-      <td>0.683509</td>
-      <td>2.796762</td>
+      <th>MSFT</th>
+      <td>152.735065</td>
     </tr>
   </tbody>
 </table>
@@ -14674,9 +14664,7 @@ Name: W, dtype: float64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># DELETING A ROW</span>
-<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># by default... but to hold use inplace</span>
-<span class="n">df</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">by_comp</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 </pre></div>
 
      </div>
@@ -14715,1995 +14703,61 @@ Name: W, dtype: float64</pre>
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>W</th>
-      <th>X</th>
-      <th>Y</th>
-      <th>Z</th>
-      <th>new</th>
+      <th>Company</th>
+      <th>FB</th>
+      <th>GOOG</th>
+      <th>MSFT</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>A</th>
-      <td>2.706850</td>
-      <td>0.628133</td>
-      <td>0.907969</td>
-      <td>0.503826</td>
-      <td>3.614819</td>
+      <th rowspan="8" valign="top">Sales</th>
+      <th>count</th>
+      <td>2.000000</td>
+      <td>2.000000</td>
+      <td>2.000000</td>
     </tr>
     <tr>
-      <th>B</th>
-      <td>0.651118</td>
-      <td>-0.319318</td>
-      <td>-0.848077</td>
-      <td>0.605965</td>
-      <td>-0.196959</td>
+      <th>mean</th>
+      <td>296.500000</td>
+      <td>160.000000</td>
+      <td>232.000000</td>
     </tr>
     <tr>
-      <th>C</th>
-      <td>-2.018168</td>
-      <td>0.740122</td>
-      <td>0.528813</td>
-      <td>-0.589001</td>
-      <td>-1.489355</td>
+      <th>std</th>
+      <td>75.660426</td>
+      <td>56.568542</td>
+      <td>152.735065</td>
     </tr>
     <tr>
-      <th>D</th>
-      <td>0.188695</td>
-      <td>-0.758872</td>
-      <td>-0.933237</td>
-      <td>0.955057</td>
-      <td>-0.744542</td>
+      <th>min</th>
+      <td>243.000000</td>
+      <td>120.000000</td>
+      <td>124.000000</td>
     </tr>
     <tr>
-      <th>E</th>
-      <td>0.190794</td>
-      <td>1.978757</td>
-      <td>2.605967</td>
-      <td>0.683509</td>
-      <td>2.796762</td>
+      <th>25%</th>
+      <td>269.750000</td>
+      <td>140.000000</td>
+      <td>178.000000</td>
     </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># DELETING A COLUMN</span>
-<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;new&#39;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># SELECTING ROWS</span>
-<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[10]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>W    2.706850
-X    0.628133
-Y    0.907969
-Z    0.503826
-Name: A, dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>   <span class="c1"># index based even if labelled otherwise</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>W   -2.018168
-X    0.740122
-Y    0.528813
-Z   -0.589001
-Name: C, dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span> <span class="c1"># row , column</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[12]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>-0.8480769834036315</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">],[</span><span class="s1">&#39;W&#39;</span><span class="p">,</span><span class="s1">&#39;Y&#39;</span><span class="p">]]</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>W</th>
-      <th>Y</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>A</th>
-      <td>2.706850</td>
-      <td>0.907969</td>
-    </tr>
-    <tr>
-      <th>C</th>
-      <td>-2.018168</td>
-      <td>0.528813</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Conditional-Selection">Conditional Selection<a class="anchor-link" href="#Conditional-Selection">&#182;</a></h2>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">&gt;</span> <span class="mi">0</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[14]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>W</th>
-      <th>X</th>
-      <th>Y</th>
-      <th>Z</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>A</th>
-      <td>True</td>
-      <td>True</td>
-      <td>True</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>B</th>
-      <td>True</td>
-      <td>False</td>
-      <td>False</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>C</th>
-      <td>False</td>
-      <td>True</td>
-      <td>True</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>D</th>
-      <td>True</td>
-      <td>False</td>
-      <td>False</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>E</th>
-      <td>True</td>
-      <td>True</td>
-      <td>True</td>
-      <td>True</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">booldf</span> <span class="o">=</span> <span class="n">df</span><span class="o">&gt;</span><span class="mi">0</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="n">booldf</span><span class="p">]</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>W</th>
-      <th>X</th>
-      <th>Y</th>
-      <th>Z</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>A</th>
-      <td>2.706850</td>
-      <td>0.628133</td>
-      <td>0.907969</td>
-      <td>0.503826</td>
-    </tr>
-    <tr>
-      <th>B</th>
-      <td>0.651118</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.605965</td>
-    </tr>
-    <tr>
-      <th>C</th>
-      <td>NaN</td>
-      <td>0.740122</td>
-      <td>0.528813</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>D</th>
-      <td>0.188695</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.955057</td>
-    </tr>
-    <tr>
-      <th>E</th>
-      <td>0.190794</td>
-      <td>1.978757</td>
-      <td>2.605967</td>
-      <td>0.683509</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="In-whole-dataframe-will-return-NaN-for-False,-but-in-a-sub-set-of-dataframe-or-series,-will-return-only-True-values">In whole dataframe will return <code>NaN</code> for <code>False</code>, but in a sub-set of dataframe or series, will return only <code>True</code> values<a class="anchor-link" href="#In-whole-dataframe-will-return-NaN-for-False,-but-in-a-sub-set-of-dataframe-or-series,-will-return-only-True-values">&#182;</a></h3>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[17]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>A     True
-B     True
-C    False
-D     True
-E     True
-Name: W, dtype: bool</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># conditional selection - df[series of True, False] to get only True values</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[18]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>W</th>
-      <th>X</th>
-      <th>Y</th>
-      <th>Z</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>A</th>
-      <td>2.706850</td>
-      <td>0.628133</td>
-      <td>0.907969</td>
-      <td>0.503826</td>
-    </tr>
-    <tr>
-      <th>B</th>
-      <td>0.651118</td>
-      <td>-0.319318</td>
-      <td>-0.848077</td>
-      <td>0.605965</td>
-    </tr>
-    <tr>
-      <th>D</th>
-      <td>0.188695</td>
-      <td>-0.758872</td>
-      <td>-0.933237</td>
-      <td>0.955057</td>
-    </tr>
-    <tr>
-      <th>E</th>
-      <td>0.190794</td>
-      <td>1.978757</td>
-      <td>2.605967</td>
-      <td>0.683509</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[19]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[19]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>W</th>
-      <th>X</th>
-      <th>Y</th>
-      <th>Z</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>C</th>
-      <td>-2.018168</td>
-      <td>0.740122</td>
-      <td>0.528813</td>
-      <td>-0.589001</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">result_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">result_df</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[20]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>W</th>
-      <th>X</th>
-      <th>Y</th>
-      <th>Z</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>A</th>
-      <td>2.706850</td>
-      <td>0.628133</td>
-      <td>0.907969</td>
-      <td>0.503826</td>
-    </tr>
-    <tr>
-      <th>B</th>
-      <td>0.651118</td>
-      <td>-0.319318</td>
-      <td>-0.848077</td>
-      <td>0.605965</td>
-    </tr>
-    <tr>
-      <th>D</th>
-      <td>0.188695</td>
-      <td>-0.758872</td>
-      <td>-0.933237</td>
-      <td>0.955057</td>
-    </tr>
-    <tr>
-      <th>E</th>
-      <td>0.190794</td>
-      <td>1.978757</td>
-      <td>2.605967</td>
-      <td>0.683509</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">result_df</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[21]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>A    0.628133
-B   -0.319318
-D   -0.758872
-E    1.978757
-Name: X, dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[22]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;X&#39;</span><span class="p">]</span> <span class="c1"># single step for above</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[22]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>A    0.628133
-B   -0.319318
-D   -0.758872
-E    1.978757
-Name: X, dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[23]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">][[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;Y&#39;</span><span class="p">]]</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[23]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>X</th>
-      <th>Y</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>A</th>
-      <td>0.628133</td>
-      <td>0.907969</td>
-    </tr>
-    <tr>
-      <th>B</th>
-      <td>-0.319318</td>
-      <td>-0.848077</td>
-    </tr>
-    <tr>
-      <th>D</th>
-      <td>-0.758872</td>
-      <td>-0.933237</td>
-    </tr>
-    <tr>
-      <th>E</th>
-      <td>1.978757</td>
-      <td>2.605967</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[24]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># df[(df[&#39;W&#39;]&gt;0) and (df[&#39;Y&#39;]&gt;0.5)]</span>
-<span class="c1"># ERROR:</span>
-<span class="c1"># The truth value of a Series is ambiguous. </span>
-<span class="c1"># Use a.empty, a.bool(), a.item(), a.any() or a.all().</span>
-<span class="c1"># because logicals can&#39;t compare series</span>
-<span class="c1"># Use paranthesis too</span>
-<span class="c1"># and &amp;</span>
-<span class="c1"># or |</span>
-<span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">)]</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[24]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>W</th>
-      <th>X</th>
-      <th>Y</th>
-      <th>Z</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>A</th>
-      <td>2.706850</td>
-      <td>0.628133</td>
-      <td>0.907969</td>
-      <td>0.503826</td>
-    </tr>
-    <tr>
-      <th>E</th>
-      <td>0.190794</td>
-      <td>1.978757</td>
-      <td>2.605967</td>
-      <td>0.683509</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Reset-Index">Reset Index<a class="anchor-link" href="#Reset-Index">&#182;</a></h2>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[25]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span> <span class="c1"># makes new column, and resets index</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[25]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>index</th>
-      <th>W</th>
-      <th>X</th>
-      <th>Y</th>
-      <th>Z</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>A</td>
-      <td>2.706850</td>
-      <td>0.628133</td>
-      <td>0.907969</td>
-      <td>0.503826</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>B</td>
-      <td>0.651118</td>
-      <td>-0.319318</td>
-      <td>-0.848077</td>
-      <td>0.605965</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>C</td>
-      <td>-2.018168</td>
-      <td>0.740122</td>
-      <td>0.528813</td>
-      <td>-0.589001</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>D</td>
-      <td>0.188695</td>
-      <td>-0.758872</td>
-      <td>-0.933237</td>
-      <td>0.955057</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>E</td>
-      <td>0.190794</td>
-      <td>1.978757</td>
-      <td>2.605967</td>
-      <td>0.683509</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Set-Index">Set Index<a class="anchor-link" href="#Set-Index">&#182;</a></h2>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[26]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">new_index</span> <span class="o">=</span> <span class="s1">&#39;7 8 9 10 11&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[27]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">new_index</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[27]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>[&#39;7&#39;, &#39;8&#39;, &#39;9&#39;, &#39;10&#39;, &#39;11&#39;]</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[28]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;new index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_index</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[29]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[29]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>W</th>
-      <th>X</th>
-      <th>Y</th>
-      <th>Z</th>
-      <th>new index</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>A</th>
-      <td>2.706850</td>
-      <td>0.628133</td>
-      <td>0.907969</td>
-      <td>0.503826</td>
-      <td>7</td>
-    </tr>
-    <tr>
-      <th>B</th>
-      <td>0.651118</td>
-      <td>-0.319318</td>
-      <td>-0.848077</td>
-      <td>0.605965</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <th>C</th>
-      <td>-2.018168</td>
-      <td>0.740122</td>
-      <td>0.528813</td>
-      <td>-0.589001</td>
-      <td>9</td>
-    </tr>
-    <tr>
-      <th>D</th>
-      <td>0.188695</td>
-      <td>-0.758872</td>
-      <td>-0.933237</td>
-      <td>0.955057</td>
-      <td>10</td>
-    </tr>
-    <tr>
-      <th>E</th>
-      <td>0.190794</td>
-      <td>1.978757</td>
-      <td>2.605967</td>
-      <td>0.683509</td>
-      <td>11</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[30]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;new index&#39;</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[30]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>W</th>
-      <th>X</th>
-      <th>Y</th>
-      <th>Z</th>
-    </tr>
-    <tr>
-      <th>new index</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>7</th>
-      <td>2.706850</td>
-      <td>0.628133</td>
-      <td>0.907969</td>
-      <td>0.503826</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>0.651118</td>
-      <td>-0.319318</td>
-      <td>-0.848077</td>
-      <td>0.605965</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>-2.018168</td>
-      <td>0.740122</td>
-      <td>0.528813</td>
-      <td>-0.589001</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>0.188695</td>
-      <td>-0.758872</td>
-      <td>-0.933237</td>
-      <td>0.955057</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>0.190794</td>
-      <td>1.978757</td>
-      <td>2.605967</td>
-      <td>0.683509</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Multi-Index-and-Hierarchy">Multi-Index and Hierarchy<a class="anchor-link" href="#Multi-Index-and-Hierarchy">&#182;</a></h2>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[31]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Index Levels</span>
-<span class="n">outside</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span><span class="s1">&#39;G2&#39;</span><span class="p">,</span><span class="s1">&#39;G2&#39;</span><span class="p">,</span><span class="s1">&#39;G2&#39;</span><span class="p">]</span>
-<span class="n">inside</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
-<span class="n">hier_index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">outside</span><span class="p">,</span><span class="n">inside</span><span class="p">))</span>
-<span class="n">hier_index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_tuples</span><span class="p">(</span><span class="n">hier_index</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[32]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hier_index</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[32]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>MultiIndex([(&#39;G1&#39;, 1),
-            (&#39;G1&#39;, 2),
-            (&#39;G1&#39;, 3),
-            (&#39;G2&#39;, 1),
-            (&#39;G2&#39;, 2),
-            (&#39;G2&#39;, 3)],
-           )</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[33]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="n">index</span><span class="o">=</span><span class="n">hier_index</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">])</span>
-<span class="n">df</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[33]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th>A</th>
-      <th>B</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">G1</th>
-      <th>1</th>
-      <td>0.302665</td>
-      <td>1.693723</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>-1.706086</td>
-      <td>-1.159119</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>-0.134841</td>
-      <td>0.390528</td>
-    </tr>
-    <tr>
-      <th rowspan="3" valign="top">G2</th>
-      <th>1</th>
-      <td>0.166905</td>
-      <td>0.184502</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0.807706</td>
-      <td>0.072960</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>0.638787</td>
-      <td>0.329646</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[34]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">]</span> <span class="c1"># from outside index</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[34]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>A</th>
-      <th>B</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>0.302665</td>
-      <td>1.693723</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>-1.706086</td>
-      <td>-1.159119</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>-0.134841</td>
-      <td>0.390528</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[35]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># go from outside to inside</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[35]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>A    0.302665
-B    1.693723
-Name: 1, dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[36]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Groups&#39;</span><span class="p">,</span><span class="s1">&#39;Num&#39;</span><span class="p">]</span> <span class="c1"># labelling index outside to inside</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[37]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[37]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th>A</th>
-      <th>B</th>
-    </tr>
-    <tr>
-      <th>Groups</th>
-      <th>Num</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">G1</th>
-      <th>1</th>
-      <td>0.302665</td>
-      <td>1.693723</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>-1.706086</td>
-      <td>-1.159119</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>-0.134841</td>
-      <td>0.390528</td>
-    </tr>
-    <tr>
-      <th rowspan="3" valign="top">G2</th>
-      <th>1</th>
-      <td>0.166905</td>
-      <td>0.184502</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0.807706</td>
-      <td>0.072960</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>0.638787</td>
-      <td>0.329646</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[38]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;G2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s1">&#39;B&#39;</span><span class="p">]</span> <span class="c1"># outside to inside</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[38]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>0.07295967531703869</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[39]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#cross-section</span>
-<span class="n">df</span><span class="o">.</span><span class="n">xs</span><span class="p">(</span><span class="s1">&#39;G1&#39;</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[39]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>A</th>
-      <th>B</th>
-    </tr>
-    <tr>
-      <th>Num</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>0.302665</td>
-      <td>1.693723</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>-1.706086</td>
-      <td>-1.159119</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>-0.134841</td>
-      <td>0.390528</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[40]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">xs</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;Num&#39;</span><span class="p">)</span> <span class="c1"># the index  where value is 1</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[40]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>A</th>
-      <th>B</th>
-    </tr>
     <tr>
-      <th>Groups</th>
-      <th></th>
-      <th></th>
+      <th>50%</th>
+      <td>296.500000</td>
+      <td>160.000000</td>
+      <td>232.000000</td>
     </tr>
-  </thead>
-  <tbody>
     <tr>
-      <th>G1</th>
-      <td>0.302665</td>
-      <td>1.693723</td>
+      <th>75%</th>
+      <td>323.250000</td>
+      <td>180.000000</td>
+      <td>286.000000</td>
     </tr>
     <tr>
-      <th>G2</th>
-      <td>0.166905</td>
-      <td>0.184502</td>
+      <th>max</th>
+      <td>350.000000</td>
+      <td>200.000000</td>
+      <td>340.000000</td>
     </tr>
   </tbody>
 </table>
