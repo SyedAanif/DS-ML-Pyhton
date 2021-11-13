@@ -4,3 +4,4 @@
 #### 2.  NumPy
 #### 3.  Pandas
 #### 4.  Visualisation
+#### 5.  Supervised Learning
