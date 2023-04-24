@@ -4,3 +4,7 @@
 #### 2.  NumPy
 #### 3.  Pandas
 #### 4.  Visualisation
+#### 5.  Supervised Learning
+#### 6.  Unsupervised Learning
+#### 7.  Recommendation Systems
+#### 8.  Natural Language Processing
